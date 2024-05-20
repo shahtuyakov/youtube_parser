@@ -37,8 +37,12 @@ def download_subtitles(video_url, output_path, languages, auto_captions=False):
         ydl.download([video_url])
 
 def main():
-    # Path to the Excel file containing video URLs
-    excel_file = 'test2.xlsx'
+    # Ask for the path of the Excel file to process
+    excel_file = input("Enter the path of the Excel file to process: ").strip()
+    if not os.path.isfile(excel_file):
+        logging.error(f"The file '{excel_file}' does not exist.")
+        return
+    
     script_dir = os.path.dirname(os.path.realpath(__file__))
     
     # Get video URLs from the Excel file

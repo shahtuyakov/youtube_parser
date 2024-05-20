@@ -48,17 +48,14 @@ def parse_vtt(subtitles):
     return parsed_subtitles
 
 
-def find_hook(subtitles, max_time='00:01:00.000'):
+def find_hook(subtitles):
     hook = []
     for subtitle in subtitles:
-        if subtitle['start_time'] <= max_time:
             hook.append(subtitle['text'])
-        else:
-            break
     return ' '.join(hook)
 
 def save_hook(hook_text, video_title, output_folder):
-    hook_filename = f"{video_title}_hook.txt"
+    hook_filename = f"{video_title}.txt"
     hook_filepath = os.path.join(output_folder, hook_filename)
     with open(hook_filepath, 'w', encoding='utf-8') as file:
         file.write(hook_text)
@@ -77,11 +74,8 @@ def analyze_subtitles(subtitles_folder, hooks_folder):
             if file.endswith('.vtt'):
                 file_path = os.path.join(root, file)
                 try:
-                    # logging.info(f"Cleaning subtitles from {file_path}")
                     cleaned_content = clean_vtt(file_path)
-                    # logging.debug(f"Cleaned content: {cleaned_content[:100]}...")  # Log first 100 characters for debugging
-                    
-                    logging.info(f"Parsing cleaned subtitles from {file_path}")
+
                     subtitles = parse_and_remove_duplicates(cleaned_content)
                     
                     parsed_subtitles = parse_vtt(subtitles)

@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -68,13 +69,13 @@ def get_channel_videos(youtube, channel_id):
                 video_id = item['id']['videoId']
                 title = item['snippet']['title']
                 link = f'https://www.youtube.com/watch?v={video_id}'
-                description = item['snippet'].get('description', 'No description available')
+                # description = item['snippet'].get('description', 'No description available')
                 thumbnail_url = item['snippet']['thumbnails']['high']['url']
                 stats = get_video_statistics(youtube, video_id)
                 video_data = {
                     'Title': title,
                     'Link': link,
-                    'Description': description,
+                    # 'Description': description,
                     'Thumbnail': thumbnail_url,
                     'View Count': stats['View Count'],
                     'Like Count': stats['Like Count'],
@@ -104,6 +105,12 @@ def main():
     if not output_file.endswith('.xlsx'):
         logging.error("Invalid file name. The output file must have a .xlsx extension.")
         return
+    
+    # Directory to save subtitles 
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    output_path = os.path.join(script_dir, 'channel_stats')
+    os.makedirs(output_path, exist_ok=True)
+    output_file = os.path.join(output_path, output_file)
 
     youtube = get_youtube_service(api_key)
     channel_id = get_channel_id(youtube, channel_name)
